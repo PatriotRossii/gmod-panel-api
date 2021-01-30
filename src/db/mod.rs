@@ -1,6 +1,7 @@
 pub mod models;
 pub mod schema;
 
+use actix_web::dev::Server;
 use diesel::{prelude::*, sqlite::SqliteConnection};
 use models::{*};
 
@@ -52,8 +53,7 @@ impl CardInfo {
 }
 
 impl ClientInfo {
-    pub fn insert<'a>(conn: &SqliteConnection, nickname: &'a str, steam_id: Option<&'a str>, vkid: Option<&'a str>) {
-        let client_info = NewClientInfo { nickname, steam_id, vkid };
+    pub fn insert<'a>(conn: &SqliteConnection, client_info: NewClientInfo) {
         diesel::insert_into(schema::clients::table)
             .values(&client_info)
             .execute(conn)
@@ -67,8 +67,7 @@ impl ClientInfo {
 }
 
 impl ConnectedModuleInfo {
-    pub fn insert(conn: &SqliteConnection, server_id: i32, module_id: i32, status: bool) {
-        let cmodule_info = ConnectedModuleInfo { server_id, module_id, status };
+    pub fn insert(conn: &SqliteConnection, cmodule_info: ConnectedModuleInfo) {
         diesel::insert_into(schema::connected_modules::table)
             .values(&cmodule_info)
             .execute(conn)
@@ -82,8 +81,7 @@ impl ConnectedModuleInfo {
 }
 
 impl ModuleInfo {
-    pub fn insert(conn: &SqliteConnection, name: &str, cost: i32, author: i32) {
-        let module_info = NewModuleInfo { name, cost, author };
+    pub fn insert(conn: &SqliteConnection, module_info: NewModuleInfo) {
         diesel::insert_into(schema::modules::table)
             .values(&module_info)
             .execute(conn)
@@ -97,8 +95,7 @@ impl ModuleInfo {
 }
 
 impl ServerInfo {
-    pub fn insert<'a>(conn: &SqliteConnection, client_id: i32, name: &'a str, ip: &'a str, password: &'a str) {
-        let nserver_info = NewServerInfo { client_id, name, ip, password };
+    pub fn insert<'a>(conn: &SqliteConnection, nserver_info: NewServerInfo) {
         diesel::insert_into(schema::servers::table)
             .values(&nserver_info)
             .execute(conn)
@@ -108,5 +105,21 @@ impl ServerInfo {
         schema::servers::table
             .load::<ServerInfo>(conn)
             .expect("Error loading new server info")
+    }
+    pub fn find_by_id(conn: &SqliteConnection, id_: i32) -> Result<Option<ServerInfo>, diesel::result::Error> {
+        use schema::servers::dsl::*;
+        let info = servers
+            .filter(id.eq(id_))
+            .first::<ServerInfo>(conn)
+            .optional()?;
+        Ok(info)        
+    }
+    pub fn find_by_client_id(conn: &SqliteConnection, client_id_: i32) -> Result<Option<ServerInfo>, diesel::result::Error> {
+        use schema::servers::dsl::*;
+        let info = servers
+            .filter(client_id.eq(client_id_))
+            .first::<ServerInfo>(conn)
+            .optional()?;
+        Ok(info)
     }
 }
