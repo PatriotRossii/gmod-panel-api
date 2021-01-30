@@ -36,7 +36,7 @@ table! {
     modules (id) {
         id -> Nullable<Integer>,
         name -> Nullable<Text>,
-        cost -> Nullable<Text>,
+        cost -> Nullable<Integer>,
         author -> Nullable<Integer>,
     }
 }
@@ -46,7 +46,7 @@ table! {
         id -> Nullable<Integer>,
         client_id -> Nullable<Integer>,
         name -> Nullable<Text>,
-        ip -> Nullable<Integer>,
+        ip -> Nullable<Text>,
         password -> Nullable<Text>,
     }
 }

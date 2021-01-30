@@ -2,6 +2,6 @@
 CREATE TABLE modules (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
-    cost TEXT,
+    cost INTEGER,
     author INTEGER
 );
