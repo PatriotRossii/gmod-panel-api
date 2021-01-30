@@ -11,8 +11,7 @@ pub fn establish_connection() -> SqliteConnection {
 }
 
 impl BillingInfo {
-    pub fn insert(conn: &SqliteConnection, client_id: i32, phone_number: Option<&str>, card_info: Option<i32>) {
-        let billing_info = NewBillingInfo { client_id, phone_number, card_info };
+    pub fn insert(conn: &SqliteConnection, billing_info: NewBillingInfo) {
         diesel::insert_into(schema::billing_info::table)
             .values(&billing_info)
             .execute(conn)
@@ -23,11 +22,23 @@ impl BillingInfo {
             .load::<BillingInfo>(conn)
             .expect("Error loading billing info")
     }
+    pub fn find_by_id(
+        conn: &SqliteConnection,
+        id: i32
+    ) -> Result<Option<BillingInfo>, diesel::result::Error> {
+        use schema::billing_info::dsl::*;
+
+        let info =
+            billing_info
+                .filter(client_id.eq(id))
+                .first::<BillingInfo>(conn)
+                .optional()?;
+        Ok(info)        
+    }
 }
 
 impl CardInfo {
-    pub fn insert(conn: &SqliteConnection, number: i32, expires: i32, cvv: i32) {
-        let card_info = NewCardInfo { number, expires, cvv };
+    pub fn insert(conn: &SqliteConnection, card_info: NewCardInfo) {
         diesel::insert_into(schema::card_info::table)
             .values(&card_info)
             .execute(conn)

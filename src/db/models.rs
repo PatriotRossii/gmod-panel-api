@@ -1,21 +1,21 @@
 use super::schema::*;
 
-#[derive(Insertable)]
+#[derive(Debug, Insertable, Deserialize)]
 #[table_name = "billing_info"]
-pub struct NewBillingInfo<'a> {
+pub struct NewBillingInfo {
     pub client_id: i32,
-    pub phone_number: Option<&'a str>,
+    pub phone_number: Option<String>,
     pub card_info: Option<i32>
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct BillingInfo {
     pub client_id: i32,
     pub phone_number: Option<String>,
     pub card_info: Option<i32>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "card_info"]
 pub struct NewCardInfo {
     pub number: i32,
@@ -23,7 +23,7 @@ pub struct NewCardInfo {
     pub cvv: i32,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct CardInfo {
     pub id: i32,
     pub number: i32,
@@ -31,7 +31,7 @@ pub struct CardInfo {
     pub cvv: i32,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "clients"]
 pub struct NewClientInfo<'a> {
     pub nickname: &'a str,
@@ -39,7 +39,7 @@ pub struct NewClientInfo<'a> {
     pub vkid: Option<&'a str>,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct ClientInfo {
     pub id: i32,
     pub nickname: String,
@@ -47,7 +47,7 @@ pub struct ClientInfo {
     pub vkid: Option<String>
 }
 
-#[derive(Insertable, Queryable)]
+#[derive(Insertable, Queryable, Serialize, Deserialize)]
 #[table_name = "connected_modules"]
 pub struct ConnectedModuleInfo {
     pub server_id: i32,
@@ -55,7 +55,7 @@ pub struct ConnectedModuleInfo {
     pub status: bool,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "modules"]
 pub struct NewModuleInfo<'a> {
     pub name: &'a str,
@@ -63,7 +63,7 @@ pub struct NewModuleInfo<'a> {
     pub author: i32,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct ModuleInfo {
     pub id: i32,
     pub name: String,
@@ -71,7 +71,7 @@ pub struct ModuleInfo {
     pub author: i32,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "servers"]
 pub struct NewServerInfo<'a> {
     pub client_id: i32,
@@ -80,7 +80,7 @@ pub struct NewServerInfo<'a> {
     pub password: &'a str,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct ServerInfo {
     pub id: i32,
     pub client_id: i32,
