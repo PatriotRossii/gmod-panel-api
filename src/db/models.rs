@@ -1,11 +1,18 @@
 use super::schema::*;
 
-#[derive(Insertable, Queryable)]
+#[derive(Insertable)]
 #[table_name = "billing_info"]
-pub struct BillingInfo<'a> {
+pub struct NewBillingInfo<'a> {
     pub client_id: i32,
-    pub phone_number: &'a str,
-    pub card_info: i32,
+    pub phone_number: Option<&'a str>,
+    pub card_info: Option<i32>
+}
+
+#[derive(Queryable)]
+pub struct BillingInfo {
+    pub client_id: i32,
+    pub phone_number: Option<String>,
+    pub card_info: Option<i32>,
 }
 
 #[derive(Insertable)]
@@ -24,13 +31,20 @@ pub struct CardInfo {
     pub cvv: i32,
 }
 
-#[derive(Insertable, Queryable)]
+#[derive(Insertable)]
 #[table_name = "clients"]
-pub struct ClientInfo<'a> {
-    pub id: i32,
+pub struct NewClientInfo<'a> {
     pub nickname: &'a str,
-    pub steam_id: &'a str,
-    pub vkid: &'a str
+    pub steam_id: Option<&'a str>,
+    pub vkid: Option<&'a str>,
+}
+
+#[derive(Queryable)]
+pub struct ClientInfo {
+    pub id: i32,
+    pub nickname: String,
+    pub steam_id: Option<String>,
+    pub vkid: Option<String>
 }
 
 #[derive(Insertable, Queryable)]
@@ -50,9 +64,9 @@ pub struct NewModuleInfo<'a> {
 }
 
 #[derive(Queryable)]
-pub struct ModuleInfo<'a> {
+pub struct ModuleInfo {
     pub id: i32,
-    pub name: &'a str,
+    pub name: String,
     pub cost: i32,
     pub author: i32,
 }
@@ -60,7 +74,6 @@ pub struct ModuleInfo<'a> {
 #[derive(Insertable)]
 #[table_name = "servers"]
 pub struct NewServerInfo<'a> {
-    pub id: i32,
     pub client_id: i32,
     pub name: &'a str,
     pub ip: &'a str,
@@ -68,10 +81,11 @@ pub struct NewServerInfo<'a> {
 }
 
 #[derive(Queryable)]
-pub struct ServerInfo<'a> {
+pub struct ServerInfo {
+    pub id: i32,
     pub client_id: i32,
-    pub name: &'a str,
-    pub ip: &'a str,
-    pub password: &'a str,
+    pub name: String,
+    pub ip: String,
+    pub password: String,
 }
 

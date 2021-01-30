@@ -1,6 +1,6 @@
 table! {
     billing_info (client_id) {
-        client_id -> Nullable<Integer>,
+        client_id -> Integer,
         phone_number -> Nullable<Text>,
         card_info -> Nullable<Integer>,
     }
@@ -8,17 +8,17 @@ table! {
 
 table! {
     card_info (id) {
-        id -> Nullable<Integer>,
-        number -> Nullable<Integer>,
-        expires -> Nullable<Integer>,
-        cvv -> Nullable<Integer>,
+        id -> Integer,
+        number -> Integer,
+        expires -> Integer,
+        cvv -> Integer,
     }
 }
 
 table! {
     clients (id) {
-        id -> Nullable<Integer>,
-        nickname -> Nullable<Text>,
+        id -> Integer,
+        nickname -> Text,
         steam_id -> Nullable<Text>,
         vkid -> Nullable<Text>,
     }
@@ -26,28 +26,28 @@ table! {
 
 table! {
     connected_modules (server_id) {
-        server_id -> Nullable<Integer>,
-        module_id -> Nullable<Integer>,
-        status -> Nullable<Bool>,
+        server_id -> Integer,
+        module_id -> Integer,
+        status -> Bool,
     }
 }
 
 table! {
     modules (id) {
-        id -> Nullable<Integer>,
-        name -> Nullable<Text>,
-        cost -> Nullable<Integer>,
-        author -> Nullable<Integer>,
+        id -> Integer,
+        name -> Text,
+        cost -> Integer,
+        author -> Integer,
     }
 }
 
 table! {
     servers (id) {
-        id -> Nullable<Integer>,
-        client_id -> Nullable<Integer>,
-        name -> Nullable<Text>,
-        ip -> Nullable<Text>,
-        password -> Nullable<Text>,
+        id -> Integer,
+        client_id -> Integer,
+        name -> Text,
+        ip -> Text,
+        password -> Text,
     }
 }
 

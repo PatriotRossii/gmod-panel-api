@@ -1,7 +1,7 @@
 -- Your SQL goes here
 CREATE TABLE modules (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    cost INTEGER,
-    author INTEGER
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL,
+    cost INTEGER NOT NULL,
+    author INTEGER NOT NULL
 );

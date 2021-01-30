@@ -1,7 +1,7 @@
 -- Your SQL goes here
 CREATE TABLE card_info (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    number INTEGER,
-    expires INTEGER,
-    cvv INTEGER
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    number INTEGER NOT NULL,
+    expires INTEGER NOT NULL,
+    cvv INTEGER NOT NULL
 );
