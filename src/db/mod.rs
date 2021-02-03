@@ -50,6 +50,18 @@ impl CardInfo {
             .load::<CardInfo>(conn)
             .expect("Error loading card info")
     }
+    pub fn find_by_id(
+        conn: &SqliteConnection,
+        id_: i32
+    ) -> Result<Option<CardInfo>, diesel::result::Error> {
+        use schema::card_info::dsl::*;
+        let info =
+            card_info
+                .filter(id.eq(id_))
+                .first::<CardInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
 }
 
 impl ClientInfo {

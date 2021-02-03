@@ -2,9 +2,11 @@ use actix_web::{error, middleware, web, App, Error, HttpRequest, HttpResponse, H
 use diesel::{SqliteConnection, r2d2::{self, ConnectionManager}, sqlite::Sqlite};
 use serde::{Deserialize, Serialize};
 
-use gmod_panel_api::db::{models::{BillingInfo, NewBillingInfo}, establish_connection};
+use gmod_panel_api::db::{establish_connection, models::{BillingInfo, NewBillingInfo, NewCardInfo, CardInfo}};
 
 type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+
+// BILLING INFO 
 
 pub fn insert_billing_info(pool: web::Data<DbPool>, path: web::Query<NewBillingInfo>) -> HttpResponse {
     let connection = pool.get().expect("couldn't get db connection from pool");
@@ -16,7 +18,7 @@ pub fn insert_billing_info(pool: web::Data<DbPool>, path: web::Query<NewBillingI
 }
 #[derive(Deserialize)]
 struct GetBillingInfoQuery {
-    client_id: i32,
+    pub client_id: i32,
 }
 
 async fn get_billing_info(pool: web::Data<DbPool>, path: web::Query<GetBillingInfoQuery>) -> Result<HttpResponse, Error> {
@@ -39,6 +41,43 @@ async fn get_billing_info(pool: web::Data<DbPool>, path: web::Query<GetBillingIn
     }
 }
 
+// CARD INFO
+
+pub fn insert_card_info(pool: web::Data<DbPool>, path: web::Query<NewCardInfo>) -> HttpResponse {
+    let connection = pool.get().expect("couldn't get db connection from pool");
+    CardInfo::insert(
+        &connection,
+        path.into_inner()
+    );
+    HttpResponse::Ok().body("success")
+}
+
+#[derive(Deserialize)]
+struct GetCardInfoQuery {
+    pub id: i32,
+}
+
+async fn get_card_info(pool: web::Data<DbPool>, path: web::Query<GetCardInfoQuery>) -> Result<HttpResponse, Error> {
+    let connection = pool.get().expect("couldn't get db connection from pool");
+    let id = path.into_inner().id;
+
+    let info = web::block(move || CardInfo::find_by_id(&connection, id))
+        .await
+        .map_err(|e| {
+            eprintln!("{}", e);
+            HttpResponse::InternalServerError().finish()
+        })?;
+    
+    if let Some(info) = info {
+        Ok(HttpResponse::Ok().json(info))
+    } else {
+        let res = HttpResponse::NotFound()
+            .body(format!("No user found with id: {}", id));
+        Ok(res)
+    }
+
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
@@ -58,6 +97,11 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/billing_info")
                     .service(web::resource("/insert").route(web::get().to(insert_billing_info)))
                     .service(web::resource("/get").route(web::get().to(get_billing_info)))
+            )
+            .service(
+                web::scope("/card_info")
+                    .service(web::resource("/insert").route(web::get().to(insert_card_info)))
+                    .service(web::resource("/get").route(web::get().to(get_card_info)))
             )
     }).bind("127.0.0.1:8080")?.run().await
 }
