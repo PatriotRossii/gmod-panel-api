@@ -26,13 +26,13 @@ impl BillingInfo {
     pub fn find_by_id(
         conn: &SqliteConnection,
         id: i32
-    ) -> Result<Option<BillingInfo>, diesel::result::Error> {
+    ) -> Result<Option<Vec<BillingInfo>>, diesel::result::Error> {
         use schema::billing_info::dsl::*;
 
         let info =
             billing_info
                 .filter(client_id.eq(id))
-                .first::<BillingInfo>(conn)
+                .get_results::<BillingInfo>(conn)
                 .optional()?;
         Ok(info)        
     }
@@ -53,12 +53,12 @@ impl CardInfo {
     pub fn find_by_id(
         conn: &SqliteConnection,
         id_: i32
-    ) -> Result<Option<CardInfo>, diesel::result::Error> {
+    ) -> Result<Option<Vec<CardInfo>>, diesel::result::Error> {
         use schema::card_info::dsl::*;
         let info =
             card_info
                 .filter(id.eq(id_))
-                .first::<CardInfo>(conn)
+                .get_results::<CardInfo>(conn)
                 .optional()?;
         Ok(info)
     }
@@ -76,6 +76,42 @@ impl ClientInfo {
             .load::<ClientInfo>(conn)
             .expect("Error loading client info")
     }
+    pub fn find_by_id(
+        conn: &SqliteConnection,
+        id_: i32
+    ) -> Result<Option<ClientInfo>, diesel::result::Error> {
+        use schema::clients::dsl::*;
+        let info =
+            clients
+                .filter(id.eq(id_))
+                .first::<ClientInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
+    pub fn find_by_steam_id(
+        conn: &SqliteConnection,
+        id_: &str
+    ) -> Result<Option<ClientInfo>, diesel::result::Error> {
+        use schema::clients::dsl::*;
+        let info =
+            clients
+                .filter(steam_id.eq(id_))
+                .first::<ClientInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
+    pub fn find_by_vk_id(
+        conn: &SqliteConnection,
+        id_: &str
+    ) -> Result<Option<ClientInfo>, diesel::result::Error> {
+        use schema::clients::dsl::*;
+        let info =
+            clients
+                .filter(vkid.eq(id_))
+                .first::<ClientInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
 }
 
 impl ConnectedModuleInfo {
@@ -90,6 +126,31 @@ impl ConnectedModuleInfo {
             .load::<ConnectedModuleInfo>(conn)
             .expect("Error loading new connected module info")
     }
+    pub fn find_by_module_id(
+        conn: &SqliteConnection,
+        id_: i32
+    ) -> Result<Option<Vec<ConnectedModuleInfo>>, diesel::result::Error> {
+        use schema::connected_modules::dsl::*;
+        let info =
+            connected_modules
+                .filter(module_id.eq(id_))
+                .get_results::<ConnectedModuleInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
+    pub fn find_by_server_id(
+        conn: &SqliteConnection,
+        id_: i32
+    ) -> Result<Option<Vec<ConnectedModuleInfo>>, diesel::result::Error> {
+        use schema::connected_modules::dsl::*;
+        let info =
+            connected_modules
+                .filter(server_id.eq(id_))
+                .get_results::<ConnectedModuleInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
+
 }
 
 impl ModuleInfo {
@@ -104,6 +165,19 @@ impl ModuleInfo {
             .load::<ModuleInfo>(conn)
             .expect("Error loading new module info")
     }
+    pub fn find_by_id(
+        conn: &SqliteConnection,
+        id_: i32
+    ) -> Result<Option<ModuleInfo>, diesel::result::Error> {
+        use schema::modules::dsl::*;
+        let info =
+            modules
+                .filter(id.eq(id_))
+                .first::<ModuleInfo>(conn)
+                .optional()?;
+        Ok(info)
+    }
+
 }
 
 impl ServerInfo {
@@ -126,11 +200,11 @@ impl ServerInfo {
             .optional()?;
         Ok(info)        
     }
-    pub fn find_by_client_id(conn: &SqliteConnection, client_id_: i32) -> Result<Option<ServerInfo>, diesel::result::Error> {
+    pub fn find_by_client_id(conn: &SqliteConnection, client_id_: i32) -> Result<Option<Vec<ServerInfo>>, diesel::result::Error> {
         use schema::servers::dsl::*;
         let info = servers
             .filter(client_id.eq(client_id_))
-            .first::<ServerInfo>(conn)
+            .get_results::<ServerInfo>(conn)
             .optional()?;
         Ok(info)
     }
