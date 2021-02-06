@@ -33,10 +33,10 @@ pub struct CardInfo {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "clients"]
-pub struct NewClientInfo<'a> {
-    pub nickname: &'a str,
-    pub steam_id: Option<&'a str>,
-    pub vkid: Option<&'a str>,
+pub struct NewClientInfo {
+    pub nickname: String,
+    pub steam_id: String,
+    pub vkid: String,
 }
 
 #[derive(Queryable, Serialize)]
@@ -57,8 +57,8 @@ pub struct ConnectedModuleInfo {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "modules"]
-pub struct NewModuleInfo<'a> {
-    pub name: &'a str,
+pub struct NewModuleInfo {
+    pub name: String,
     pub cost: i32,
     pub author: i32,
 }
